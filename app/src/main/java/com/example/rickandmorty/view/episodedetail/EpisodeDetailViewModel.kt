@@ -1,6 +1,5 @@
 package com.example.rickandmorty.view.episodedetail
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rickandmorty.usecase.GetEpisodeById

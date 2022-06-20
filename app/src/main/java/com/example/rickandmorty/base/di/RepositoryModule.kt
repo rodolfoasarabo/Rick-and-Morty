@@ -1,9 +1,6 @@
 package com.example.rickandmorty.base.di
 
-import com.example.rickandmorty.data.repository.EpisodeDetailRepository
-import com.example.rickandmorty.data.repository.EpisodeDetailRepositoryImpl
-import com.example.rickandmorty.EpisodeListRepository
-import com.example.rickandmorty.EpisodeListRepositoryImpl
+import com.example.rickandmorty.data.repository.*
 import dagger.Binds
 import dagger.Module
 import dagger.Reusable
@@ -26,4 +23,9 @@ interface RepositoryModule {
         episodeDetailRepositoryImpl: EpisodeDetailRepositoryImpl
     ): EpisodeDetailRepository
 
+    @Binds
+    @Reusable
+    fun bindCharacterListRepository(
+        characterListRepositoryImpl: CharacterListRepositoryImpl
+    ): CharacterListRepository
 }

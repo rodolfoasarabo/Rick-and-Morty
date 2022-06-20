@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+
 package com.example.rickandmorty.view.episodedetail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,14 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,14 +30,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.rickandmorty.R
+import com.example.rickandmorty.view.BottomSheetCharacterContent
+import com.example.rickandmorty.view.CharacterView
 import com.example.rickandmorty.view.LoadingView
 import com.example.rickandmorty.view.uimodel.CharacterUiModel
 import com.example.rickandmorty.view.uimodel.EpisodeDetailUiModel
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
 @Composable
 fun EpisodeDetailScreen(
     viewModel: EpisodeDetailViewModel = hiltViewModel(),
@@ -65,8 +65,6 @@ fun EpisodeDetailScreen(
 }
 
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @Composable
 fun CharacterBottomSheet(
     modifier: Modifier = Modifier,
@@ -95,87 +93,6 @@ fun CharacterBottomSheet(
     }
 }
 
-@Composable
-fun BottomSheetCharacterContent(
-    modifier: Modifier = Modifier,
-    character: CharacterUiModel?
-) {
-    Column(modifier = modifier.wrapContentHeight()) {
-        Spacer(modifier = Modifier.height(1.dp))
-        character?.let { characterSafe ->
-            with(characterSafe) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    ) {
-                        GlideImage(
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .width(72.dp)
-                                .height(72.dp)
-                                .clip(CircleShape),
-                            placeHolder = painterResource(id = R.drawable.rickmorty),
-                            imageModel = image
-                        )
-                        Column(
-                            modifier = Modifier
-                                .height(72.dp)
-                                .padding(start = 8.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = name,
-                                maxLines = 2,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                val color = when (status) {
-                                    "Alive" -> Color.Green
-                                    "Dead" -> Color.Red
-                                    else -> Color.Gray
-                                }
-                                Image(
-                                    modifier = Modifier.size(12.dp),
-                                    colorFilter = ColorFilter.tint(color),
-                                    painter = painterResource(id = R.drawable.dot),
-                                    contentDescription = "",
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    fontSize = 14.sp,
-                                    text = "$status · $species"
-                                )
-                            }
-                        }
-                    }
-                    Divider()
-                    Column(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            fontSize = 14.sp,
-                            text = "Origin: ${origin.name}"
-                        )
-                        Text(
-                            fontSize = 14.sp,
-                            text = "Current location: ${location.name}"
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
 @Composable
 fun EpisodeView(
     modifier: Modifier = Modifier,
@@ -252,39 +169,5 @@ fun EpisodeView(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun CharacterView(
-    modifier: Modifier = Modifier,
-    characterUiModel: CharacterUiModel,
-    onCharacterClick: (CharacterUiModel) -> Unit
-) {
-    Column(
-        modifier = modifier
-            .width(72.dp)
-            .padding(8.dp)
-            .clickable {
-                onCharacterClick(characterUiModel)
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        GlideImage(
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .width(72.dp)
-                .height(72.dp)
-                .clip(CircleShape),
-            placeHolder = painterResource(id = R.drawable.rickmorty),
-            imageModel = characterUiModel.image
-        )
-        Text(
-            text = characterUiModel.name,
-            fontSize = 12.sp,
-            modifier = Modifier.padding(top = 4.dp),
-            textAlign = TextAlign.Center,
-            maxLines = 2
-        )
     }
 }

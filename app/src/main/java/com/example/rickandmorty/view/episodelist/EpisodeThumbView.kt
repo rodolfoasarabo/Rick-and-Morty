@@ -1,31 +1,32 @@
 package com.example.rickandmorty.view.episodelist
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.rickandmorty.R
 import com.example.rickandmorty.view.LoadingView
 import com.example.rickandmorty.view.uimodel.EpisodeUiModel
@@ -39,11 +40,10 @@ fun EpisodeThumbView(
 ) {
     Card(
         elevation = 4.dp,
-        border = BorderStroke(1.dp, Color.Gray),
         onClick = { navController.navigate("episode_detail/${episode.id}") },
         modifier = modifier
             .padding(4.dp)
-            .width(180.dp)
+            .fillMaxWidth()
             .height(170.dp)
     ) {
         Column(modifier = Modifier.background(Color.White)) {
@@ -71,7 +71,6 @@ fun EpisodeThumbView(
                 Text(
                     text = episode.episode,
                     fontSize = 14.sp,
-                    maxLines = 2,
                     modifier = Modifier
                         .padding(
                             start = 4.dp,
@@ -82,19 +81,31 @@ fun EpisodeThumbView(
                     color = Color.White
                 )
             }
-            Text(
-                text = episode.name,
-                modifier = Modifier.padding(
-                    start = 4.dp,
-                    top = 4.dp,
-                    end = 4.dp
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                Text(
+                    text = episode.name,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(
+                        start = 4.dp,
+                        top = 4.dp,
+                        end = 4.dp
+                    )
                 )
-            )
-            Text(
-                text = episode.airDate,
-                fontSize = 8.sp,
-                modifier = Modifier.padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
-            )
+                Text(
+                    text = episode.airDate,
+                    fontSize = 8.sp,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp, end = 4.dp)
+                        .align(
+                            Alignment.BottomEnd
+                        )
+                )
+            }
         }
     }
 }
@@ -104,33 +115,51 @@ fun EpisodeThumbView(
 @Composable
 fun EpisodeList(
     viewModel: EpisodeListViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    openDrawer: () -> Unit
 ) {
+    val episodeList = viewModel.episodes.collectAsLazyPagingItems()
 
-    val uiState = viewModel.uiStateFlow.collectAsState()
+    Column(modifier = Modifier.fillMaxSize()) {
 
-    Column {
-        Text(
-            text = "Episode List",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Episode List",
+                    color = Color.DarkGray,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp
+                )
+            },
+            backgroundColor = Color.White,
+            navigationIcon = {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_menu),
+                    colorFilter = ColorFilter.tint(Color.Gray),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .clickable {
+                            openDrawer()
+                        }
+                        .padding(start = 16.dp)
+                )
+            }
         )
-        Divider()
-        when (uiState.value) {
-            is EpisodeListViewState.Success -> {
-                LazyVerticalGrid(
-                    cells = GridCells.Fixed(2),
-                ) {
-                    items((uiState.value as? EpisodeListViewState.Success)?.episodeList.orEmpty()) { episode ->
-                        EpisodeThumbView(episode = episode, navController = navController)
-                    }
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(2)
+        ) {
+            items(
+                count = episodeList.itemCount
+            ) { index ->
+                episodeList[index]?.let {
+                    EpisodeThumbView(episode = it, navController = navController)
                 }
             }
-            EpisodeListViewState.Loading -> LoadingView()
+        }
+        episodeList.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> LoadingView()
+            }
         }
     }
 }

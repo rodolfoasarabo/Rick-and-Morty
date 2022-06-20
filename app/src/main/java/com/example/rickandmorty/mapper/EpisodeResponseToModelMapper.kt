@@ -15,8 +15,7 @@ interface EpisodeResponseToModelMapper {
 
 class EpisodeResponseToModelMapperImpl @Inject constructor(
     private val characterResponseToModelMapper: CharacterResponseToModelMapper
-) :
-    EpisodeResponseToModelMapper {
+) : EpisodeResponseToModelMapper {
 
     override fun mapFrom(
         from: EpisodeResponse,

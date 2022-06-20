@@ -4,16 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.navigation.NavType
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.example.rickandmorty.view.characterlist.CharacterListScreen
 import com.example.rickandmorty.view.episodedetail.EpisodeDetailScreen
 import com.example.rickandmorty.view.episodelist.EpisodeList
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalMaterialApi
@@ -25,20 +26,58 @@ class MainActivity @Inject constructor() : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                val navController = rememberNavController()
+                AppMainScreen()
+            }
+        }
+    }
+}
 
-                NavHost(navController = navController, startDestination = "episode_list") {
-                    composable("episode_list") {
-                        EpisodeList(navController = navController)
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+@Composable
+fun AppMainScreen() {
+    val navController = rememberNavController()
+    Surface {
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+        val openDrawer: () -> Unit = {
+            scope.launch {
+                drawerState.open()
+            }
+        }
+        ModalDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
+            drawerContent = {
+                Drawer(
+                    onDestinationClick = { route ->
+                        scope.launch {
+                            drawerState.close()
+                        }
+                        navController.navigate(route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
                     }
-                    composable(
-                        "episode_detail/{episodeId}"
-                    ) { backStackEntry ->
-                        EpisodeDetailScreen(
-                            episodeId = backStackEntry.arguments?.getString("episodeId"),
-                            navController = navController
-                        )
-                    }
+                )
+            }
+        ) {
+            NavHost(navController = navController, startDestination = "episode_list") {
+                composable("episode_list") {
+                    EpisodeList(navController = navController, openDrawer = openDrawer)
+                }
+                composable("character_list") {
+                    CharacterListScreen(
+                        openDrawer = openDrawer
+                    )
+                }
+                composable(
+                    "episode_detail/{episodeId}"
+                ) { backStackEntry ->
+                    EpisodeDetailScreen(
+                        episodeId = backStackEntry.arguments?.getString("episodeId"),
+                        navController = navController
+                    )
                 }
             }
         }

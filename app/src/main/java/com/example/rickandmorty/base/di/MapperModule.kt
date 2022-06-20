@@ -34,4 +34,10 @@ interface MapperModule {
     fun bindsEpisodeResponseToModelMapper(
         episodeResponseToModelMapperImpl: EpisodeResponseToModelMapperImpl
     ): EpisodeResponseToModelMapper
+
+    @Binds
+    @Reusable
+    fun bindsCharacterModelToUiModelMapper(
+        characterModelToUiModelMapperImpl: CharacterModelToUiModelMapperImpl
+    ): CharacterModelToUiModelMapper
 }
