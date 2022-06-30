@@ -15,6 +15,9 @@ interface RickAndMortyApi {
     @GET("character")
     suspend fun getAllCharacters(
         @Query("page") page: Int,
+        @Query("name") name: String?,
+        @Query("status") status: String?,
+        @Query("gender") gender: String?
     ): GenericResponse<CharacterResponse>
 
     @GET("episode")

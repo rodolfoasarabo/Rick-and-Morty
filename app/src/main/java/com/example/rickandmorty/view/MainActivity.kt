@@ -1,6 +1,7 @@
 package com.example.rickandmorty.view
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -10,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.rickandmorty.base.LightColors
 import com.example.rickandmorty.view.characterlist.CharacterListScreen
 import com.example.rickandmorty.view.episodedetail.EpisodeDetailScreen
 import com.example.rickandmorty.view.episodelist.EpisodeList
@@ -24,8 +26,9 @@ class MainActivity @Inject constructor() : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
-            MaterialTheme {
+            MaterialTheme(colors = LightColors) {
                 AppMainScreen()
             }
         }

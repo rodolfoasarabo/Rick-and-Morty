@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.rickandmorty.data.model.FilterModel
 import com.example.rickandmorty.data.repository.CharacterListRepository
 import com.example.rickandmorty.mapper.CharacterModelToUiModelMapper
 import com.example.rickandmorty.usecase.CharacterSource
@@ -23,11 +24,14 @@ class CharacterListViewModel @Inject constructor(
 
     val characterFlow = MutableStateFlow<CharacterUiModel?>(null)
 
+    val filter = MutableStateFlow<FilterModel?>(null)
+
     val characters: Flow<PagingData<CharacterUiModel>> =
         Pager(PagingConfig(20), initialKey = 1) {
             CharacterSource(
                 characterListRepository,
-                mapper
+                mapper,
+                filter.value
             )
         }.flow.cachedIn(viewModelScope)
 }

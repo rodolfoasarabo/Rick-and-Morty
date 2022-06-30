@@ -2,14 +2,16 @@ package com.example.rickandmorty.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.rickandmorty.R
 
 sealed class DrawerScreens(val title: String, val route: String) {
     object Episodes : DrawerScreens("Episode List", "episode_list")
@@ -29,8 +31,17 @@ fun Drawer(
     Column(
         modifier
             .fillMaxSize()
-            .padding(start = 24.dp, top = 48.dp)
+            .padding(start = 24.dp, end = 24.dp)
     ) {
+        Image(
+            modifier = Modifier
+                .height(88.dp)
+                .wrapContentWidth()
+                .align(Alignment.CenterHorizontally),
+            painter = painterResource(id = R.drawable.rick_and_morty_logo),
+            contentScale = ContentScale.Fit,
+            contentDescription = null
+        )
         screens.forEach { screen ->
             Text(
                 text = screen.title,

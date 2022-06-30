@@ -9,7 +9,8 @@ import javax.inject.Inject
 interface CharacterListRepository {
 
     suspend fun getAllCharacters(
-        page: Int
+        page: Int,
+        filter: FilterModel?
     ): GenericModel<CharacterModel>
 }
 
@@ -17,6 +18,8 @@ class CharacterListRepositoryImpl @Inject constructor(
     private val characterListDataSource: CharacterListDataSource
 ) : CharacterListRepository {
 
-    override suspend fun getAllCharacters(page: Int) =
-        characterListDataSource.getAllCharacters(page)
+    override suspend fun getAllCharacters(
+        page: Int,
+        filter: FilterModel?
+    ) = characterListDataSource.getAllCharacters(page, filter)
 }

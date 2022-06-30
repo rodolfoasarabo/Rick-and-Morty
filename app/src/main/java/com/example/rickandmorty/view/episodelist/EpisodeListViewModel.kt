@@ -6,6 +6,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.rickandmorty.data.repository.EpisodeListRepository
+import com.example.rickandmorty.mapper.EpisodeModelToUiModelMapper
 import com.example.rickandmorty.usecase.EpisodeSource
 import com.example.rickandmorty.view.uimodel.EpisodeUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,10 +16,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeListViewModel @Inject constructor(
-    private val episodeSource: EpisodeSource
+    private val episodeListRepository: EpisodeListRepository,
+    private val mapper: EpisodeModelToUiModelMapper
 ) : ViewModel() {
 
     val episodes: Flow<PagingData<EpisodeUiModel>> = Pager(PagingConfig(20)) {
-        episodeSource
+        EpisodeSource(
+            episodeListRepository,
+            mapper
+        )
     }.flow.cachedIn(viewModelScope)
 }

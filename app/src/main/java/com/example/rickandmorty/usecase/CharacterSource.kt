@@ -3,6 +3,7 @@ package com.example.rickandmorty.usecase
 import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.rickandmorty.data.model.FilterModel
 import com.example.rickandmorty.data.repository.CharacterListRepository
 import com.example.rickandmorty.mapper.CharacterModelToUiModelMapper
 import com.example.rickandmorty.view.uimodel.CharacterUiModel
@@ -11,7 +12,8 @@ import java.io.IOException
 
 class CharacterSource constructor(
     private val characterListRepository: CharacterListRepository,
-    private val mapper: CharacterModelToUiModelMapper
+    private val mapper: CharacterModelToUiModelMapper,
+    private val filter: FilterModel?
 ) : PagingSource<Int, CharacterUiModel>() {
 
     override fun getRefreshKey(
@@ -25,7 +27,7 @@ class CharacterSource constructor(
             val nextPage = params.key ?: 1
 
             val response =
-                characterListRepository.getAllCharacters(page = nextPage)
+                characterListRepository.getAllCharacters(page = nextPage, filter = filter)
 
             val nextPageNumber = if (response.info.next != null) {
                 Uri.parse(response.info.next)?.getQueryParameter("page")?.toInt()

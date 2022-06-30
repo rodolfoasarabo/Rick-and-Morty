@@ -11,7 +11,8 @@ import javax.inject.Inject
 interface CharacterListDataSource {
 
     suspend fun getAllCharacters(
-        page: Int
+        page: Int,
+        filter: FilterModel?
     ): GenericModel<CharacterModel>
 }
 
@@ -21,9 +22,15 @@ class CharacterListDataSourceImpl @Inject constructor(
 ) : CharacterListDataSource {
 
     override suspend fun getAllCharacters(
-        page: Int
+        page: Int,
+        filter: FilterModel?
     ): GenericModel<CharacterModel> {
-        val response = service.getAllCharacters(page)
+        val response = service.getAllCharacters(
+            page = page,
+            name = filter?.name,
+            status = filter?.status?.value,
+            gender = filter?.gender?.value
+        )
 
         val infoModel = InfoModel(
             response.info.count,

@@ -133,18 +133,21 @@ fun EpisodeList(
             },
             backgroundColor = Color.White,
             navigationIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_menu),
-                    colorFilter = ColorFilter.tint(Color.Gray),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .clickable {
-                            openDrawer()
-                        }
-                        .padding(start = 16.dp)
-                )
+                Row {
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_menu),
+                        colorFilter = ColorFilter.tint(Color.Gray),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .clickable {
+                                openDrawer()
+                            }
+                    )
+                }
             }
         )
+
         LazyVerticalGrid(
             cells = GridCells.Fixed(2)
         ) {

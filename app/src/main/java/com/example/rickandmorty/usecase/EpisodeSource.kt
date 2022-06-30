@@ -17,7 +17,7 @@ class EpisodeSource @Inject constructor(
 
     override fun getRefreshKey(
         state: PagingState<Int, EpisodeUiModel>
-    ) = state.anchorPosition
+    ) = 1
 
     override suspend fun load(
         params: LoadParams<Int>

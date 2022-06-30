@@ -31,7 +31,6 @@ class EpisodeDetailViewModel @Inject constructor(
             _uiState.value = EpisodeDetailViewState.Success(episode)
         }
     }
-
 }
 
 sealed class EpisodeDetailViewState {
