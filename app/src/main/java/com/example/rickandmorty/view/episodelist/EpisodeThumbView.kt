@@ -5,9 +5,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -123,7 +123,7 @@ fun EpisodeList(
         when (uiState.value) {
             is EpisodeListViewState.Success -> {
                 LazyVerticalGrid(
-                    cells = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(2),
                 ) {
                     items((uiState.value as? EpisodeListViewState.Success)?.episodeList.orEmpty()) { episode ->
                         EpisodeThumbView(episode = episode, navController = navController)

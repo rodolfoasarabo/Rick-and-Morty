@@ -36,6 +36,6 @@ class EpisodeDetailViewModel @Inject constructor(
 }
 
 sealed class EpisodeDetailViewState {
-    object Loading : EpisodeDetailViewState()
+    data object Loading : EpisodeDetailViewState()
     class Success(val episodeDetailUiModel: EpisodeDetailUiModel) : EpisodeDetailViewState()
 }
